@@ -23,6 +23,7 @@
 //#define ASM_INTERPOLATE
 
 #include "VoxelAfx.h"
+#include "Directories.h"
 #include <cmath>
 #include <cstdio>
 #include "Image.h"
@@ -165,7 +166,7 @@ bool MixTable::MakeLookup(PALETTEENTRY *pe, bool disk){
 	//Now the lookup is saved, and if the saved lookup palette is the same as the palette
 	//that a lookup has to be made for, the old lookup is loaded in.
 	if(disk){
-		if((f = fopen(fn, "rb")) != NULL){
+		if((f = OpenFile(fn, "rb")) != NULL){
 			fread(tpe, sizeof(PALETTEENTRY), 256, f);
 			OK = 1;
 			for(i = 0; i < 256; i++){
@@ -214,7 +215,7 @@ bool MixTable::MakeLookup(PALETTEENTRY *pe, bool disk){
 	}  }
 
 	if(disk){
-		if((f = fopen(fn, "wb")) != NULL){
+		if((f = OpenFile(fn, "wb")) != NULL){
 			fwrite(pe, sizeof(PALETTEENTRY), 256, f);
 			fwrite(Mix4, 1, tablesize, f);
 			fclose(f);

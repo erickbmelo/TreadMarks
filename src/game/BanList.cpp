@@ -16,6 +16,7 @@
 #include <stdio.h>
 
 #include "BanList.h"
+#include "Directories.h"
 
 CBanEntry::CBanEntry()
 {
@@ -93,7 +94,7 @@ bool CBanList::IsBanned(in_addr IP)
 
 void CBanList::SaveBanList(char *sFileName)
 {
-	FILE	*fp = fopen(sFileName, "w");
+	FILE	*fp = OpenFile(sFileName, "w");
 
 	if (fp != NULL)
 	{
@@ -109,7 +110,7 @@ void CBanList::SaveBanList(char *sFileName)
 
 void CBanList::LoadBanList(char *sFileName)
 {
-	FILE	*fp = fopen(sFileName, "r");
+	FILE	*fp = OpenFile(sFileName, "r");
 
 	if (fp != NULL)
 	{

@@ -37,6 +37,7 @@
 #include <netdb.h>
 #endif
 #include "IFF.h"
+#include "Directories.h"
 
 using namespace std;
 
@@ -68,7 +69,7 @@ int IFF::Even(){
 int IFF::OpenIn(const char *name, int offset){	//On OpenIn, Start points to first real chunk, on OpenOut, Start points to very start of FORM chunk!
 	Close();
 	int ret = 0;
-	FILE *f = fopen(name, "rb");
+	FILE *f = OpenFile(name, "rb");
 	if(f){
 		fseek(f, offset, SEEK_SET);
 		ret = OpenIn(f);
@@ -253,7 +254,7 @@ int IFF::OpenOut(const char *name, const char *type, int offset){
 }
 int IFF::OpenOut(const char *name, int offset){
 	Close();
-	if(name && offset >= 0 && (F = fopen(name, "wb"))){
+	if(name && offset >= 0 && (F = OpenFile(name, "wb"))){
 		OwnFile = true;
 		IsOpen = true;
 		IsWrite = true;

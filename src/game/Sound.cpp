@@ -19,6 +19,7 @@
 //
 
 #include "Sound.h"
+#include "Directories.h"
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
@@ -299,7 +300,7 @@ void Sound::SetVoice2D(int voice)
 
 void Sound::StartMusic(const CStr& sFilename)
 {
-	bool bSucceeded = music.openFromFile(sFilename.get());
+	bool bSucceeded = music.openFromFile(ResolvePath(sFilename).get());
 	music.play();
 }
 

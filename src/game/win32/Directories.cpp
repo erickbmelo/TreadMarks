@@ -14,12 +14,12 @@
 // along with Tread Marks.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "../Directories.h"
+#include "../Filesystem.h"
 #include <shlobj.h>
 #include <string>
-#include <experimental/filesystem>
+#include <system_error>
 
 using namespace std;
-using namespace std::experimental::filesystem;
 
 CStr GetAppDataDir()
 {
@@ -32,7 +32,7 @@ CStr GetAppDataDir()
 			rc += '/';
 		rc += "Longbow Digital Arts/Tread Marks/";
 	}
-	create_directories(rc);
+	CreateDirectories(rc.c_str());
 	return CStr(rc.c_str());
 }
 
@@ -47,6 +47,36 @@ CStr GetCommonAppDataDir()
 			rc += '/';
 		rc += "Longbow Digital Arts/Tread Marks/";
 	}
-	create_directories(rc);
+	CreateDirectories(rc.c_str());
 	return CStr(rc.c_str());
+}
+
+// Windows filesystems are case-insensitive and accept both separators, so
+// paths need no translation here.
+CStr ResolvePath(const char* path)
+{
+	return CStr(path);
+}
+
+FILE* OpenFile(const char* path, const char* mode)
+{
+	if(!path || !mode)
+		return NULL;
+	return fopen(path, mode);
+}
+
+bool ChangeToGameDirectory(const char* argv0)
+{
+	// The launcher starts the game from its install directory.
+	return true;
+}
+
+bool CreateDirectories(const char* path)
+{
+	if(!path || !path[0])
+		return false;
+
+	error_code ec;
+	fs::create_directories(fs::path(path), ec);
+	return fs::is_directory(fs::path(path), ec);
 }

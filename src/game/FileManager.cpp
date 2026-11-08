@@ -16,6 +16,7 @@
 //File manager implementation.  Seumas McNally, 1998.
 
 #include "FileManager.h"
+#include "Directories.h"
 #include "CfgParse.h"
 
 //#include <cstdlib>
@@ -80,12 +81,16 @@ FILE *FileManager::Open(const char *name){	//The returned pointer is for conveni
 	Close();
 	CStrList *cl = &SearchDirHead;
 	if(name && strlen(name) > 0){
-		while((cl != NULL) && (cl->Data != NULL) && (NULL == (f = ::fopen(*cl->Data + name, "rb")))){
+		while((cl != NULL) && (cl->Data != NULL)){
+			// Keep the resolved path; callers hand it to libraries (e.g. SFML)
+			// that open the file again by name.
+			CStr path = ResolvePath(*cl->Data + name);
+			if((f = ::fopen(path, "rb"))){
+				FileName = path;
+				FileOffset = 0;
+				break;
+			}
 			cl = cl->NextLink();
-		}
-		if(f){
-			FileName = *cl->Data + name;
-			FileOffset = 0;
 		}
 	}
 	if(f == NULL && name && strlen(name) > 0){

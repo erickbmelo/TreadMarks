@@ -45,6 +45,7 @@
 
 #include <cstdlib>
 #include "Quantizer.h"
+#include "Directories.h"
 #include "CStr.h"
 
 struct ARGB{
@@ -244,7 +245,7 @@ public:
 	bool SaveBMP(FILE *f, bool noflip = false){ return ::SaveBMP(f, this, ppe, noflip); };
 	bool LoadBMP8(const char *bmp){	//Forces the loaded bitmap down to 8 bit, if true color.
 		FILE *f;
-		if(bmp && (f = fopen(bmp, "rb"))){
+		if(bmp && (f = OpenFile(bmp, "rb"))){
 			if(LoadBMP8(f)){
 				fclose(f);
 				return true;

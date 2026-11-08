@@ -42,6 +42,7 @@
 #include <cstdio>
 #include <cstring>
 #include "Quantizer.h"
+#include "Directories.h"
 
 #include "macros.h"
 
@@ -180,7 +181,7 @@ bool MixTable::MakeLookup(PaletteEntry *pe, bool disk){
 	//that a lookup has to be made for, the old lookup is loaded in.
 #ifndef TEST_CUBE_LERP
 	if(disk){
-		if((f = fopen(fn, "rb")) != NULL){
+		if((f = OpenFile(fn, "rb")) != NULL){
 			fread(tpe, sizeof(PaletteEntry), 256, f);
 			OK = true;
 			for(i = 0; i < 256; i++){
@@ -256,7 +257,7 @@ bool MixTable::MakeLookup(PaletteEntry *pe, bool disk){
 
 #endif
 	if(disk){
-		if((f = fopen(fn, "wb")) != NULL){
+		if((f = OpenFile(fn, "wb")) != NULL){
 			fwrite(pe, sizeof(PaletteEntry), 256, f);
 			fwrite(Mix4, 1, tablesize, f);
 			fclose(f);

@@ -17,13 +17,54 @@
 
 #include "Find.h"
 #include "TextLine.hpp"
-
-#include <cstring>
-
+#include "Directories.h"
 #include "Filesystem.h"
-#include <regex>
+
+#include <algorithm>
+#include <cctype>
+#include <cstring>
+#include <string>
+#include <system_error>
+#include <vector>
 using namespace std;
-using namespace fs;
+
+// Matches a file name against a wildcard where '*' matches any run of
+// characters and '?' matches any single character.  Like on Windows, case is
+// ignored.
+static bool WildcardMatch(const char* pattern, const char* name)
+{
+	const char* star = NULL;
+	const char* retry = NULL;
+	while(*name)
+	{
+		if(*pattern == '*')
+		{
+			star = pattern++;
+			retry = name;
+		}
+		else if(*pattern == '?' || tolower((unsigned char)*pattern) == tolower((unsigned char)*name))
+		{
+			pattern++;
+			name++;
+		}
+		else if(star)
+		{
+			pattern = star + 1;
+			name = ++retry;
+		}
+		else
+			return false;
+	}
+	while(*pattern == '*')
+		pattern++;
+	return *pattern == '\0';
+}
+
+static bool LessIgnoringCase(const string& a, const string& b)
+{
+	return lexicographical_compare(a.begin(), a.end(), b.begin(), b.end(),
+		[](char x, char y) { return toupper((unsigned char)x) < toupper((unsigned char)y); });
+}
 
 Find::Find(){
 	Clear();
@@ -50,35 +91,47 @@ int Find::AddSearch(const char *name, bool recursive, const char *addpath){
 
 	if(name)
 	{
+		if(!addpath)
+			addpath = "";
+
 		//First find and search subdirectories.
-		for(db = strlen(name) - 1; db > 0 && name[db] != '/' && name[db] != '\\' && name[db] != ':'; db--);
-		std::string left(Left(name, db + 1)), right(Mid(name, db + 1));	//Break up path and wildcard.
+		CStr sName = ResolvePath(name);
+		for(db = sName.len() - 1; db > 0 && sName.chr(db) != '/' && sName.chr(db) != '\\' && sName.chr(db) != ':'; db--);
+		std::string left(Left(sName, db + 1)), right(Mid(sName, db + 1));	//Break up path and wildcard.
 		if(left == "") left = "./";
 
-		if(is_directory(left))
+		error_code ec;
+		if(fs::is_directory(left, ec))
 		{
-			regex re("[\\\\[\\]()^$|.+]"); // Regular expression to match all special regex chars except * and ?
-			std::string sRightEscaped = regex_replace(right, re, std::string("\\$&"));
-			re = "[*?]";
-			re = regex_replace(sRightEscaped, re, std::string(".$&"));
-
-			for(directory_iterator iter(left); iter != directory_iterator(); ++iter)
+			// Gather the names first so results come back in the same order on
+			// every platform.  NTFS returns directory entries sorted without
+			// regard to case, and the order maps and tanks are enumerated in
+			// affects the game.
+			struct Entry { std::string sName; bool bDir; };
+			vector<Entry> aEntries;
+			for(fs::directory_iterator iter(left, ec), end; !ec && iter != end; iter.increment(ec))
 			{
-				if(is_directory(iter->status()))
+				std::string sFileName = iter->path().filename().string();
+				error_code ecStatus;
+				fs::file_status status = iter->status(ecStatus);
+				if(fs::is_directory(status))
 				{
 					if(recursive)
-						found += AddSearch((left + iter->path().filename().string() + "/" + right).c_str(), recursive, (std::string(addpath) + iter->path().filename().string() + "/").c_str());
+						aEntries.push_back({sFileName, true});
 				}
-				else if(is_regular_file(iter->status()))
+				else if(fs::is_regular_file(status) && WildcardMatch(right.c_str(), sFileName.c_str()))
+					aEntries.push_back({sFileName, false});
+			}
+			sort(aEntries.begin(), aEntries.end(), [](const Entry& a, const Entry& b) { return LessIgnoringCase(a.sName, b.sName); });
+
+			for(const Entry& entry : aEntries)
+			{
+				if(entry.bDir)
+					found += AddSearch((left + entry.sName + "/" + right).c_str(), recursive, (std::string(addpath) + entry.sName + "/").c_str());
+				else if(ListHead.AddItem(new CStr(CStr(addpath) + entry.sName.c_str())))
 				{
-					if(std::regex_match(iter->path().filename().string(), re))
-					{
-						if(ListHead.AddItem(new CStr(CStr(addpath) + iter->path().filename().string().c_str())))
-						{
-							found++;
-							nItems++;
-						}
-					}
+					found++;
+					nItems++;
 				}
 			}
 		}

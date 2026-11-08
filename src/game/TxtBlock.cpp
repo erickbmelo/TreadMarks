@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 #include "TxtBlock.hpp"
+#include "Directories.h"
 
 CTextBlock TextBlock;
 CTextBlock TextBlock2;
@@ -43,7 +44,7 @@ int CTextBlock::Load(char *file)
 
     this->Free();
 
-    fp = fopen(file, "rb");
+    fp = OpenFile(file, "rb");
     if (!fp)
 		return -1;
     fseek(fp,0,SEEK_END);

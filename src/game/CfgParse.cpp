@@ -22,6 +22,7 @@
 #include <algorithm>
 
 #include "CfgParse.h"
+#include "Directories.h"
 #include "Crypt.h"
 
 using namespace std;
@@ -41,14 +42,14 @@ ConfigFile::~ConfigFile(){
 	Free();
 }
 int ConfigFile::Read(const char *n, int length){	//Reads named file into internal data area for parsing.
-	FILE *f = fopen(n, "rb");
+	FILE *f = OpenFile(n, "rb");
 	int ret = Read(f, length);
 	if(f) fclose(f);
 	return ret;
 }
 bool ConfigFile::Read(FILE *f, int length){	//Reads named file into internal data area for parsing.
 	Free();
-	if(f){//(f = fopen(n, "rb"))){
+	if(f){//(f = OpenFile(n, "rb"))){
 		size_t pos, endpos;
 		pos = ftell(f);
 		if(length <= 0){
@@ -372,7 +373,7 @@ bool EnableLogFile(bool enable, const char *name){
 			tlog.f = NULL;
 			LogFileEnabled = false;
 		}
-		if(name && (tlog.f = fopen(name, "w"))){
+		if(name && (tlog.f = OpenFile(name, "w"))){
 			return LogFileEnabled = true;
 		}
 	}else{

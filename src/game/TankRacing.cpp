@@ -26,6 +26,7 @@
 #endif
 
 #include "TankRacing.h"
+#include "Directories.h"
 #include "EntityTank.h"
 #include "EntityGUI.h"
 #include "GenericBuffer.h"
@@ -156,6 +157,9 @@ void CheckGraphics()
 
 int main(int argc, char** argv)
 {
+	if(!ChangeToGameDirectory(argc > 0 ? argv[0] : NULL))
+		cerr << "Could not find the Tread Marks data files.  Run the game from the directory that contains them." << endl;
+
 #ifdef QT_CORE_LIB
 	QApplication app(argc, argv);
 	QPixmap pixmap(":/splash.png");
@@ -177,7 +181,7 @@ int main(int argc, char** argv)
 	FILE *f;	//Hacky search directory setting.
 	char buf[1024];
 	memset(buf, 0, sizeof(buf));
-	if((f = fopen("dirs.cfg", "r")) /*|| (f = fopen("x:/voxeled/dirs.cfg", "r"))*/){
+	if((f = OpenFile("dirs.cfg", "r")) /*|| (f = fopen("x:/voxeled/dirs.cfg", "r"))*/){
 		while(fgets(buf, sizeof(buf) - 1, f)) CTankGame::Get().GetVW()->FM.AddSearchDir(FilePathOnly(buf));
 		fclose(f);
 	}else{
@@ -219,10 +223,7 @@ int main(int argc, char** argv)
 	//
 	CStr sScores(GetCommonAppDataDir());
 	sScores.cat("scores");
-	// TODO: Make a platform-independent function for creating directories
-#ifdef WIN32
-	CreateDirectory(sScores.get(), NULL);	//Make dir for holding ladder saves and map stats files.
-#endif
+	CreateDirectories(sScores.get());	//Make dir for holding ladder saves and map stats files.
 	//
 
 //	if(strlen(szCmdLine) > 4 && ReadConfigCfg(szCmdLine)){

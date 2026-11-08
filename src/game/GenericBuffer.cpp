@@ -14,6 +14,7 @@
 // along with Tread Marks.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "GenericBuffer.h"
+#include "Directories.h"
 
 #include "CfgParse.h"
 #include "TankGame.h"
@@ -69,8 +70,8 @@ void GenericBuffer::CreateBuffer(int w, int h, bool fullscreen, const char *Name
 		window.setActive();
 
 		sf::Image image;
-		image.loadFromFile(sIcon);
-		window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+		if(image.loadFromFile(ResolvePath(sIcon).get()))
+			window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 		window.setMouseCursorVisible(false);
 
 		glViewport(0, 0, w, h);

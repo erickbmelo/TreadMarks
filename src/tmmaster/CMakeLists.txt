@@ -11,7 +11,14 @@ SET(SRCS
 "../game/Timer.h"		"../game/Timer.cpp"
 "TMMaster.h"			"TMMaster.cpp"
 "../game/Trees.h"
+"../game/Directories.h"	"../game/Filesystem.h"
 )
+
+IF(WIN32)
+  SET(SRCS ${SRCS} "../game/win32/Directories.cpp")
+ELSE()
+  SET(SRCS ${SRCS} "../game/Posix/Directories.cpp")
+ENDIF()
 
 ADD_EXECUTABLE(TMMaster ${SRCS})
 

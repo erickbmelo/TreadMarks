@@ -14,6 +14,7 @@
 // along with Tread Marks.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Poly.h"
+#include "Directories.h"
 //#include <math.h>
 //#include <stdio.h>
 #include "IFF.h"
@@ -46,7 +47,7 @@ bool Mesh::Init(int V, int P){
 
 bool Mesh::LoadLWO(const char *name, float Scale){
 	bool ret = false;
-	FILE *f = fopen(name, "rb");
+	FILE *f = OpenFile(name, "rb");
 	if(f){
 		ret = LoadLWO(f, Scale);
 		fclose(f);
@@ -197,7 +198,7 @@ bool Mesh::SetTexture(Image *img){
 bool Mesh::LoadUV(const char *name){
 	FILE *f;
 	bool ret = false;
-	if((f = fopen(name, "rb"))){
+	if((f = OpenFile(name, "rb"))){
 		ret = LoadUV(f);
 		fclose(f);
 	}

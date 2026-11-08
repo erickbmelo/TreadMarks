@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 #include "TextLine.hpp"
+#include "Directories.h"
 
 CText Text;
 CText Names;
@@ -48,7 +49,7 @@ int CText::Load(char *file)
 
     this->Free();
 
-    fp = fopen(file, "rb");
+    fp = OpenFile(file, "rb");
     if (!fp) return -1;
     fseek(fp,0,SEEK_END); l=ftell(fp); fseek(fp,0,SEEK_SET);
     this->Buffer = (char *)malloc(l+1);

@@ -21,6 +21,7 @@
 */
 
 #include "Image.h"
+#include "Directories.h"
 //#include <stdio>//.h>
 #include "Quantizer.h"
 #include "Basis.h"
@@ -92,7 +93,7 @@ bool MakeRemapTable(unsigned char *Remap, const PaletteEntry *oldpe, const Inver
 
 bool LoadBMP(const char *name, Bitmap *bmp, PaletteEntry *pe){
 	FILE *f;
-	if(f = fopen(name, "rb")){
+	if(f = OpenFile(name, "rb")){
 		bool t = LoadBMP(f, bmp, pe);
 		fclose(f);
 		return t;
@@ -226,7 +227,7 @@ bool LoadPackedBMP(void *bmi, Bitmap *bmp, PaletteEntry *pe){
 }
 bool SaveBMP(const char *name, Bitmap *bmp, PaletteEntry *pe, bool noflip){
 	FILE *f;
-	if(f = fopen(name, "wb")){
+	if(f = OpenFile(name, "wb")){
 		bool t = SaveBMP(f, bmp, pe, noflip);
 		fclose(f);
 		return t;
@@ -1124,7 +1125,7 @@ void Bitmap::FreeAnalyze(){
 
 bool ImageSet::LoadSet(const char *n){
 	FILE *f;
-	if((f = fopen(n, "rb"))){
+	if((f = OpenFile(n, "rb"))){
 		bool ret = LoadSet(f);
 		fclose(f);
 		return ret;
