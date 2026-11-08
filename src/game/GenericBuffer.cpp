@@ -54,7 +54,6 @@ private:
 
 	GLContextSingleton() : context(16)
 	{
-		glewInit();
 	}
 };
 
@@ -68,6 +67,12 @@ void GenericBuffer::CreateBuffer(int w, int h, bool fullscreen, const char *Name
 		window.create(mode, Name, fullscreen ? sf::Style::Fullscreen : sf::Style::Default, GLContextSingleton::Get().GetContext());
 		bFocused = true;
 		window.setActive();
+
+		// GLEW can only look up entry points and extensions once a GL context
+		// is current, so this has to come after the window is created.
+		GLenum glewErr = glewInit();
+		if(glewErr != GLEW_OK)
+			OutputDebugLog(CStr("glewInit failed: ") + (const char*)glewGetErrorString(glewErr) + "\n");
 
 		sf::Image image;
 		if(image.loadFromFile(ResolvePath(sIcon).get()))
