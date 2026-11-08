@@ -18,6 +18,7 @@
 
 #include <new>
 #include <iostream>
+#include <clocale>
 
 #ifdef QT_CORE_LIB
 #include <QApplication>
@@ -162,6 +163,10 @@ int main(int argc, char** argv)
 
 #ifdef QT_CORE_LIB
 	QApplication app(argc, argv);
+	// On Unix, Qt switches the C library to the user's locale.  The config and
+	// entity parsers use atof(), which then stops at the '.' in "0.5" when the
+	// locale uses a decimal comma (e.g. pt_BR, de_DE), silently reading 0.
+	setlocale(LC_NUMERIC, "C");
 	QPixmap pixmap(":/splash.png");
 	QSplashScreen splash(pixmap);
 	splash.showMessage("Tread Marks is now loading...", Qt::AlignBottom|Qt::AlignCenter, Qt::white);
