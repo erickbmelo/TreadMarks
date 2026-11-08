@@ -126,6 +126,8 @@ void Sound::PlayBuffer(int num, float pri)
 
 		aVoices[iLastVoice].voice.setBuffer(aBuffers[num]->buffer);
 		aVoices[iLastVoice].voice.setLoop(aBuffers[num]->bLoop);
+		aVoices[iLastVoice].voice.setRelativeToListener(true);
+		aVoices[iLastVoice].voice.setPosition(0, 0, 0);
 		aVoices[iLastVoice].voice.setAttenuation(0.0f);
 		aVoices[iLastVoice].voice.setVolume(0.0f);
 		aVoices[iLastVoice].voice.play();
@@ -171,8 +173,15 @@ int Sound::GetVoiceWave(int v)
 //Performs update of 3D spatial positions.
 bool Sound::PulseAudio()
 {
-	sf::Listener::setPosition(vListenerPos[0], vListenerPos[1], vListenerPos[2]);
-	sf::Listener::setDirection(vListenerRot[0], vListenerRot[1], vListenerRot[2]);
+	// The game's world is left-handed (+Z forward) while OpenAL's is
+	// right-handed, so Z is flipped on the way in, just as the OpenGL renderer
+	// does.  The listener's rotation is in Euler angles, so turn it into the
+	// forward and up vectors OpenAL wants.
+	Mat3 orient;
+	Rot3ToMat3(vListenerRot, orient);
+	sf::Listener::setPosition(vListenerPos[0], vListenerPos[1], -vListenerPos[2]);
+	sf::Listener::setDirection(orient[2][0], orient[2][1], -orient[2][2]);
+	sf::Listener::setUpVector(orient[1][0], orient[1][1], -orient[1][2]);
 
 	for(auto it = aVoices.begin(); it != aVoices.end(); ++it)
 	{
@@ -239,7 +248,11 @@ void Sound::SetListenerVel(Vec3 vel)
 void Sound::SetVoicePos(int v, Vec3 pos)
 {
 	if(v >= 0 && v < aVoices.size())
+	{
 		CopyVec3(pos, aVoices[v].vPos);
+		if(!aVoices[v].b2DVoice)
+			aVoices[v].voice.setPosition(pos[0], pos[1], -pos[2]);	// See PulseAudio() for the Z flip.
+	}
 }
 
 void Sound::SetVoiceVel(int v, Vec3 vel)
@@ -280,6 +293,7 @@ void Sound::SetVoice3D(int voice, Vec3 pos, Vec3 vel, float gain, float pitch, f
 	if(voice >= 0 && voice < aVoices.size())
 	{
 		aVoices[voice].b2DVoice = false;
+		aVoices[voice].voice.setRelativeToListener(false);
 		SetVoicePos(voice, pos);
 		SetVoiceVel(voice, vel);
 		SetVoicePitch(voice, pitch);
@@ -292,6 +306,7 @@ void Sound::SetVoice2D(int voice)
 {
 	if(voice >= 0 && voice < aVoices.size())
 	{
+		aVoices[voice].voice.setRelativeToListener(true);
 		aVoices[voice].voice.setPosition(0, 0, 0);
 		aVoices[voice].voice.setPitch(1.0f);
 		aVoices[voice].b2DVoice = true;
