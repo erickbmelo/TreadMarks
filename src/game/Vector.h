@@ -34,7 +34,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #pragma inline_depth(255)
 #endif
 
@@ -71,8 +71,9 @@ typedef float Rot3[3];	//A, B, C rotation angles about X, Y, and Z respectively.
 
 
 //Fast, rounding-mode-don't-care float to long conversion.
+//Rounds using the current rounding mode (to nearest by default), like fistp.
 inline int FastFtoL(float f){
-#ifdef WIN32
+#if defined(_MSC_VER) && defined(_M_IX86)
 		int i;
 		_asm{
 			fld dword ptr [f]
@@ -80,7 +81,8 @@ inline int FastFtoL(float f){
 		}
 		return i;
 #else
-        return (int)f;
+		//x64 compilers have no inline assembly; lrintf rounds the same way.
+		return (int)lrintf(f);
 #endif
 };
 

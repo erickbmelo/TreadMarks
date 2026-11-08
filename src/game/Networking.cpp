@@ -497,7 +497,7 @@ ClientConnectionStatus Network::ConnectionStatus(ClientID who){
 	}
 	return CCS_None;
 }
-int Network::SendTo(int s, char *buf, int len, int flag, const sockaddr *addr, int addrlen){
+int Network::SendTo(SocketHandle s, char *buf, int len, int flag, const sockaddr *addr, int addrlen){
 	//Optionally add packet loss and lag simulation here.
 	if(1){//rand() % 2 == 1){
 		int r = sendto(s, buf, len, flag, addr, addrlen);
@@ -507,7 +507,7 @@ int Network::SendTo(int s, char *buf, int len, int flag, const sockaddr *addr, i
 		return 0;
 	}
 }
-int Network::RecvFrom(int s, char *buf, int len, int flag, sockaddr *addr, socklen_t *addrlen){
+int Network::RecvFrom(SocketHandle s, char *buf, int len, int flag, sockaddr *addr, socklen_t *addrlen){
 	//Optionally add packet loss and lag simulation here.
 	if(1){//rand() % 2 == 1){
 		int r = recvfrom(s, buf, len, flag, addr, addrlen);

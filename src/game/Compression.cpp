@@ -17,7 +17,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#define ZLIB_DLL
 //#define _WINDOWS
 #include "zlib.h"
 

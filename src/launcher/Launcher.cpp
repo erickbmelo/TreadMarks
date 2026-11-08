@@ -25,10 +25,10 @@
 #include "../game/Directories.h"
 #include <stdio.h>
 
-BOOL CALLBACK DlgProc(HWND dlgwnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK DlgProc(HWND dlgwnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 
 //int ConfigDialog(){
-//	return DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), NULL, (DLGPROC)DlgProc);
+//	return DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc);
 //}
 
 CStr CWD;
@@ -38,7 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	_getcwd(buf, 1024);
 	CWD = buf;
 	if(Right(CWD, 1) != "\\") CWD = CWD + "\\";
-	return DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, (DLGPROC)DlgProc);
+	return DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc);
 //	return ConfigDialog();
 }//WinMain
 
@@ -82,7 +82,7 @@ CStr FindDedicated()
 	}
 }
 
-BOOL CALLBACK DlgProc(HWND dlgwnd, UINT iMsg, WPARAM wParam, LPARAM lParam){
+INT_PTR CALLBACK DlgProc(HWND dlgwnd, UINT iMsg, WPARAM wParam, LPARAM lParam){
 	HWND ctrl;
 //	RECT rc;
 //	POINT pt;
@@ -117,21 +117,21 @@ BOOL CALLBACK DlgProc(HWND dlgwnd, UINT iMsg, WPARAM wParam, LPARAM lParam){
 						SecondCfg = "";// average.cfg";
 						break;
 					case IDC_BUTTONHW :
-						if(32 < (int)ShellExecute(NULL, "open", "tm.exe", "config.cfg" + SecondCfg, CWD, SW_SHOWNORMAL)){
+						if(32 < (INT_PTR)ShellExecute(NULL, "open", "tm.exe", "config.cfg" + SecondCfg, CWD, SW_SHOWNORMAL)){
 							EndDialog(dlgwnd, TRUE);
 						}else{
 							MessageBox(dlgwnd, "Error launching program!", "Launcher Error", MB_OK);
 						}
 						break;
 					case IDC_BUTTONREADME :
-						if(32 < (int)ShellExecute(NULL, "open", CWD + "docs\\readme.html", NULL, CWD, SW_SHOWNORMAL)){
+						if(32 < (INT_PTR)ShellExecute(NULL, "open", CWD + "docs\\readme.html", NULL, CWD, SW_SHOWNORMAL)){
 							//Nothing.
 						}else{
 							MessageBox(dlgwnd, "Error launching program!", "Launcher Error", MB_OK);
 						}
 						break;
 					case IDC_BUTTONWEB :
-						if(32 < (int)ShellExecute(NULL, "open", "http://www.treadmarks.com/index.html", NULL, NULL, NULL)){
+						if(32 < (INT_PTR)ShellExecute(NULL, "open", "http://www.treadmarks.com/index.html", NULL, NULL, NULL)){
 							//EndDialog(dlgwnd, TRUE);
 						}else{
 							MessageBox(dlgwnd, "Error launching program!", "Launcher Error", MB_OK);
@@ -155,7 +155,7 @@ BOOL CALLBACK DlgProc(HWND dlgwnd, UINT iMsg, WPARAM wParam, LPARAM lParam){
 						break;
 					}
 					case IDC_BUTTONDEDICFG :
-						if(32 < (int)ShellExecute(NULL, "open", "notepad.exe", FindDedicated(), CWD, SW_SHOWNORMAL)){
+						if(32 < (INT_PTR)ShellExecute(NULL, "open", "notepad.exe", FindDedicated(), CWD, SW_SHOWNORMAL)){
 							//Nothing.
 						}else{
 							MessageBox(dlgwnd, "Error launching program!", "Launcher Error", MB_OK);

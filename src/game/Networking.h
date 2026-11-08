@@ -21,8 +21,8 @@
 #define NETWORKING_H
 
 #ifdef WIN32
-#include <WinSock2.h>
-#include <WS2tcpip.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #endif
 
 #include "Trees.h"
@@ -32,6 +32,13 @@
 
 #include <cstdint>
 #include <cstring>
+
+#ifdef WIN32
+typedef SOCKET SocketHandle;
+#else
+typedef int SocketHandle;
+#endif
+
 typedef unsigned int PacketID;
 typedef unsigned int TimeStamp;
 typedef unsigned int ClientID;
@@ -191,7 +198,7 @@ public:
 
 class Network{
 private:
-	unsigned int Sock;//ClientSock, ServerSock;
+	SocketHandle Sock;//ClientSock, ServerSock;
 	bool Initialized, ServerActive, ClientActive;
 	unsigned int ReliableTimeout;
 	unsigned int ConnectionTimeout;
@@ -267,8 +274,8 @@ public:
 private:
 	bool InitSocket();
 	bool FreeSocket();
-	int SendTo(int s, char *buf, int len, int flag, const sockaddr *addr, int addrlen);
-	int RecvFrom(int s, char *buf, int len, int flag, sockaddr *addr, socklen_t *addrlen);
+	int SendTo(SocketHandle s, char *buf, int len, int flag, const sockaddr *addr, int addrlen);
+	int RecvFrom(SocketHandle s, char *buf, int len, int flag, sockaddr *addr, socklen_t *addrlen);
 	//Private send and receive functions that can have packet loss and lag simulation applied to them.
 
 public:

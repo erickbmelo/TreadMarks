@@ -10,7 +10,8 @@ SFML:				https://www.sfml-dev.org/download.php
 GLEW:				http://glew.sourceforge.net/
 Zlib:				http://gnuwin32.sourceforge.net/packages/zlib.htm
 
-When given the option, all libraries should be the 32-bit version. Zlib comes
+When given the option, all libraries should be the 32-bit version, or all
+the 64-bit version for a 64-bit build (pick the x64 platform in CMake). Zlib comes
 either in an installer, or in zips. If you download the zips, you need to
 decompress both the binaries and developer files into the same location.
 

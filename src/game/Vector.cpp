@@ -67,8 +67,8 @@ float fsqrt_inv(float f)
  return y;
 }
 */
-// same as above but in assembly
-#ifdef WIN32
+// same as above but in assembly, for 32-bit x86 Visual C++ only
+#if defined(_MSC_VER) && defined(_M_IX86)
 	__declspec(naked) float CDECL fsqrt_inv(float f)
 	{
 	 __asm // 18 cycles
