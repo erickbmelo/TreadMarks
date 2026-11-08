@@ -24,7 +24,7 @@
 #include "Timer.h"
 #include "Terrain.h"
 #include "Poly.h"
-//#include "CamRBD.h"
+//#include "CamRbd.h"
 //#include <Image.h>
 
 class Image;

@@ -20,10 +20,10 @@
 
 #include <cstring>
 
-#include <experimental/filesystem>
+#include "Filesystem.h"
 #include <regex>
 using namespace std;
-using namespace std::experimental::filesystem;
+using namespace fs;
 
 Find::Find(){
 	Clear();

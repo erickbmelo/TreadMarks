@@ -38,6 +38,7 @@
 #define IMAGE_H
 
 #include <new>
+#include <cstdint>
 #include <iostream>
 #include <cstring>
 #include <algorithm>

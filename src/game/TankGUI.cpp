@@ -1072,7 +1072,9 @@ void DoMain()
 		StartHelp(HELP_OrderingInfo);
 		return;
 	case BID_Web :
+#ifdef WIN32
 		SetActiveWindow(NULL);
+#endif
 		OpenWebLink("http://www.longbowgames.com");
 
 		break;

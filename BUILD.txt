@@ -88,27 +88,22 @@ From here you can use cmake-gui as in the Windows build.
 
 Linux
 =====
-I've ony tried to build a headless server so far. It might work, but so far
-I've only tested the build with g++ 4.8, which crashes on startup because they
-didn't fully implement c++ regular expression until 4.9.
+The full game builds and runs on 64-bit Linux. On Ubuntu/Debian/Mint, get the
+prerequisites with:
 
-To do that, you only need Zlib, and of course cmake and a compiler.
-On Ubuntu, here's how you get your packages:
+sudo apt-get install build-essential cmake libsfml-dev libglew-dev zlib1g-dev qtbase5-dev
 
-sudo apt-get install build-essential cmake zlib1g-dev
+(qt6-base-dev works too instead of qtbase5-dev.)
 
-Or on RedHat it's:
+Then build and install:
 
-sudo yum install gcc-g++ cmake zlib
+cmake -S . -B build
+cmake --build build -j
+cmake --install build
 
-Once you have all the pre-requisites, you can create the build script and build
-it with:
+Everything is copied into the 'out' directory; run out/TM from anywhere. Your
+settings, logs and scores go in ~/.local/share/Tread Marks/ (or
+$XDG_DATA_HOME/Tread Marks/).
 
-mkdir build
-cd build
-cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_CXX_FLAGS="-std=c++11" -DBUILD_HEADLESS=true ..
-make
-make install
-
-Once everything is built, it should be copied into the 'out' directory.
-
+To build only the headless dedicated server, which needs just Zlib, add
+-DBUILD_HEADLESS=true to the first cmake command.

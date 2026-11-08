@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6.1)
+cmake_minimum_required(VERSION 3.10)
 
 SET(SRCS
 "../game/BanList.h"		"../game/BanList.cpp"
@@ -23,4 +23,4 @@ IF(WIN32)
   TARGET_LINK_LIBRARIES(TMMaster winmm.lib ws2_32.lib)
 ENDIF()
 
-INSTALL(TARGETS TMMaster RUNTIME DESTINATION "/")
+INSTALL(TARGETS TMMaster RUNTIME DESTINATION "${INSTALL_DIR}")
