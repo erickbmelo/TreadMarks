@@ -158,8 +158,8 @@ long FileManager::length(){
 	}
 	return len;
 }
-long FileManager::ReadLong(){
-	long l = 0;
+int32_t FileManager::ReadLong(){
+	int32_t l = 0;
 	if(f) ::fread(&l, sizeof(l), 1, f);
 	return l;
 }

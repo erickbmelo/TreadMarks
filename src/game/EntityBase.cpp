@@ -987,8 +987,8 @@ bool EntitySkyboxType::CacheResources(){
 					//	iy = iy & (bmp.Height() - 1);
 						ix = std::max(ix, 0); ix = std::min(ix, bmp.Width() - 1);
 						iy = std::max(iy, 0); iy = std::min(iy, bmp.Height() - 1);
-						*((long*)(envtexture->Data() + (x <<2) + y * envtexture->Pitch())) =
-							*((long*)(bmp.Data() + (ix <<2) + iy * bmp.Pitch()));
+						*((uint32_t*)(envtexture->Data() + (x <<2) + y * envtexture->Pitch())) =
+							*((uint32_t*)(bmp.Data() + (ix <<2) + iy * bmp.Pitch()));
 					}
 				}
 			}

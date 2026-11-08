@@ -20,6 +20,7 @@
 #define FILEMANAGER_H
 
 #include <cstdio>
+#include <cstdint>
 #include "CStr.h"
 #include "Find.h"
 
@@ -65,7 +66,7 @@ public:
 	int fseek(long offset, int origin);
 	long ftell();
 	long length();	//Returns the length in bytes of currently opened file.
-	long ReadLong();
+	int32_t ReadLong();
 	char ReadByte();
 };
 

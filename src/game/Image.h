@@ -49,7 +49,7 @@
 
 struct ARGB{
 	union{
-		unsigned long argb;
+		uint32_t argb;
 		unsigned short argb16;	//Can NOT be set through use of b, g, r, and a.
 		struct{
 			unsigned char b, g, r, a;

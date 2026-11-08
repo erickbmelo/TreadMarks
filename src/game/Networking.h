@@ -30,6 +30,8 @@
 
 #include "BanList.h"
 
+#include <cstdint>
+#include <cstring>
 typedef unsigned int PacketID;
 typedef unsigned int TimeStamp;
 typedef unsigned int ClientID;
@@ -43,11 +45,18 @@ typedef unsigned int ClientID;
 //#define WFLOAT(ptr, flt) (*((long*)(ptr)) = htonl(*((long*)&(flt))))
 //#define RFLOAT(ptr) (ntohl(*((long*)(ptr))))
 inline void WFLOAT(void *ptr, float flt){
-	*((long*)ptr) = htonl(*((long*)&flt));
+	uint32_t t;
+	memcpy(&t, &flt, sizeof(t));
+	t = htonl(t);
+	memcpy(ptr, &t, sizeof(t));
 };
 inline float RFLOAT(const void *ptr){
-	long t = htonl(*((long*)ptr));
-	return *((float*)&t);
+	uint32_t t;
+	memcpy(&t, ptr, sizeof(t));
+	t = ntohl(t);
+	float flt;
+	memcpy(&flt, &t, sizeof(flt));
+	return flt;
 }
 //
 #define WSHORT(ptr, srt) (*((short*)(ptr)) = htons((srt)))

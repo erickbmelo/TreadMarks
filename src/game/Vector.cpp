@@ -16,6 +16,8 @@
 #include "Vector.h"
 #include <cmath>
 #include <cstdlib>
+#include <cstdint>
+#include <cstring>
 
 /*
 //Quietly handle math errors sanely.
@@ -92,12 +94,12 @@ float fsqrt_inv(float f)
 #else
 	float fsqrt_inv(float f)
 	{
-	 long i;
+	 int32_t i;
 	 float x2, y;
 	 x2 = 0.5f*f;
-	 i = *(long *)&f;
+	 memcpy(&i, &f, sizeof(i));
 	 i = 0x5f3759df - (i>>1);
-	 y = *(float *)&i;
+	 memcpy(&y, &i, sizeof(y));
 	 // repeat this iteration for more accuracy
 	 y = 1.5f*y - (x2*y * y*y);
 	 return y;

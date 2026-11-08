@@ -285,7 +285,7 @@ static float variance = 0.0f;
 inline long FloatToLong(float f) { // relies on IEEE format for float
 	f += -0.499999f;	//This change makes it CHOP TO LOWER!!
 	f += (3 << 22);
-	return ((*(long*)&f)&0x007fffff) - 0x00400000;
+	return ((*(int32_t*)&f)&0x007fffff) - 0x00400000;
 //	return (long)f;
 }
 
@@ -728,7 +728,7 @@ bool GLRenderEngine2::GLTerrainRender(Terrain *map, Camera *cam, int flags, floa
 	//
 	//
 	//Align bintripool on 32byte boundary
-	BinTriPool = (BinaryTriangle2*)((((unsigned long)RealBinTriPool) + 31) & (~31));
+	BinTriPool = (BinaryTriangle2*)((((uintptr_t)RealBinTriPool) + 31) & ~(uintptr_t)31);
 //	BinTriPool = RealBinTriPool;
 	//
 	msecs += ms;

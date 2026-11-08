@@ -834,7 +834,7 @@ void DoFire(void *bData, int bWidth, int bHeight, int bPitch){
 //		tmr2.Start();
 		Burns++;
 		//New burn code.
- #define BLONG unsigned long
+ #define BLONG uint32_t
  #define BLONGS sizeof(BLONG)
  #define UCP (unsigned char*)
  #define BURNIT(n) temp = (*(UCP lptr + n - pitch) + *(UCP lptr + n - 1) + *(UCP lptr + n) + *(UCP lptr + n + 1) - BURNFADE) >>2; \

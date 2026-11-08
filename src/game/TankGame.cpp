@@ -2870,7 +2870,7 @@ void CTankGame::ProcessServerCommand(char* sCommand)
 		{
 			bool bKicked = false;
 			char sOutput[1024];
-			long iKickTime = 0;
+			int iKickTime = 0;
 
 			if (FirstCommand.next->next != NULL)
 			{

@@ -2046,7 +2046,7 @@ int VoxelWorld::ThinkEntities(/*int framemsec,*/ int flags){
 //	IDBucket.ClearBuckets();
 	//
 	//Send time synch request packets here now.  Doing it in a consistent place should make for less jitter.
-	if(Net.IsClientActive() && abs(long(msec - lastsynch)) > SYNCH_EVERY){
+	if(Net.IsClientActive() && abs(int32_t(msec - lastsynch)) > SYNCH_EVERY){
 		lastsynch = msec;
 		char b[16];
 		b[0] = BYTE_HEAD_TIMESYNCH;
@@ -2055,7 +2055,7 @@ int VoxelWorld::ThinkEntities(/*int framemsec,*/ int flags){
 	}
 	//
 	//Send pings to clients.
-	if(Net.IsServerActive() && abs(long(msec - lastping)) > PING_EVERY){
+	if(Net.IsServerActive() && abs(int32_t(msec - lastping)) > PING_EVERY){
 		lastping = msec;
 		char b[16];
 		b[0] = BYTE_HEAD_PING;

@@ -64,7 +64,7 @@ private:
 	int					NextBinTriPool;
 
 public:
-	BinTriPool() {NextBinTriPool = 0; 	AlignedBinTriPool = (BinaryTriangleR3*)((((unsigned long)RealBinTriPool) + 31) & (~31));}
+	BinTriPool() {NextBinTriPool = 0; 	AlignedBinTriPool = (BinaryTriangleR3*)((((uintptr_t)RealBinTriPool) + 31) & ~(uintptr_t)31);}
 	void ResetBinTriPool(){ NextBinTriPool = 0;}
 	int AvailBinTris(){ return BINTRIPOOL - NextBinTriPool;}
 	int ElectiveSplitSafe(){ return NextBinTriPool < BINTRISAFE;}

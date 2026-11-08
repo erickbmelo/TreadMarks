@@ -142,7 +142,7 @@ protected:
 	float	Ambient;
 	int		ScorchTex;
 public:
-	unsigned long	*data32;
+	uint32_t	*data32;
 //	unsigned long	*ShadeLookup32;
 public:
 	void RotateEdges();	//Rotates edges into center or vice versa for painting wrappability.

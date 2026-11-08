@@ -346,7 +346,7 @@ bool Terrain::Init(int x, int y){
 	heightmask = height - 1;
 	//
 //	if(!data32){
-	if(NULL == (data32 = (unsigned long*)malloc(width * height * sizeof(unsigned long)))){
+	if(NULL == (data32 = (uint32_t*)malloc(width * height * sizeof(uint32_t)))){
 		Free();
 		return false;
 	}
