@@ -316,6 +316,12 @@ void Sound::SetVoice2D(int voice)
 void Sound::StartMusic(const CStr& sFilename)
 {
 	bool bSucceeded = music.openFromFile(ResolvePath(sFilename).get());
+	// sf::Music is a positional source too.  Left at its defaults it sits at
+	// the world origin and fades with the camera's distance from it, so pin it
+	// to the listener instead.
+	music.setRelativeToListener(true);
+	music.setPosition(0, 0, 0);
+	music.setAttenuation(0.0f);
 	music.play();
 }
 
