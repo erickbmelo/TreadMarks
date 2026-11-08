@@ -2882,7 +2882,7 @@ void CTankGame::ProcessServerCommand(char* sCommand)
 				sprintf(sOutput, Text.Get(TEXT_DEDI_KICKINGPLAYER), FirstCommand.next->sEntry);
 			}
 #ifndef HEADLESS
-			sprintf(sOutput, "%s\n", sOutput);
+			strcat(sOutput, "\n");
 			GetDedicatedWin()->OutputFunc(sOutput, 0);
 #endif
 			for(int i = 0; i < MAX_CLIENTS; i++)
