@@ -75,8 +75,8 @@ jobs:
           Copy-Item "Tread Marks Install.exe" "Tread-Marks-windows-x64-installer.exe"
 
       - name: Upload NSIS installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: Tread-Marks-windows-x64-installer
           path: Tread-Marks-windows-x64-installer.exe
+          archive: false
           if-no-files-found: error
