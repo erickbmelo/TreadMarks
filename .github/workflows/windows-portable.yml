@@ -38,12 +38,13 @@ jobs:
         run: |
           $env:PKG_CONFIG = "$env:MSYS2_LOCATION\ucrt64\bin\pkg-config.exe"
           if (!(Test-Path $env:PKG_CONFIG)) { throw "pkg-config was not installed at $env:PKG_CONFIG" }
+          "PKG_CONFIG=$env:PKG_CONFIG" | Out-File -FilePath $env:GITHUB_ENV -Append
           $vcpkgRoot = "$env:RUNNER_TEMP\vcpkg"
           git clone --depth 1 --branch 2024.04.26 https://github.com/microsoft/vcpkg $vcpkgRoot
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & "$vcpkgRoot\bootstrap-vcpkg.bat" -disableMetrics
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & "$vcpkgRoot\vcpkg.exe" install sfml:x64-windows glew:x64-windows zlib:x64-windows
+          & "$vcpkgRoot\vcpkg.exe" install --triplet x64-windows-pkgconfig --overlay-triplets="$env:GITHUB_WORKSPACE\.github\vcpkg-triplets" sfml glew zlib
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           "VCPKG_ROOT=$vcpkgRoot" | Out-File -FilePath $env:GITHUB_ENV -Append
 
@@ -52,7 +53,8 @@ jobs:
         run: |
           cmake -S . -B build -A x64 `
             -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows `
+            -DVCPKG_TARGET_TRIPLET=x64-windows-pkgconfig `
+            -DVCPKG_OVERLAY_TRIPLETS="$env:GITHUB_WORKSPACE\.github\vcpkg-triplets" `
             -DPATH_QT="$env:GITHUB_WORKSPACE\Qt\6.8.3\msvc2022_64" `
             -DCMAKE_INSTALL_PREFIX="$env:GITHUB_WORKSPACE\dist"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
