@@ -70,9 +70,9 @@ jobs:
         run: |
           cmake --build build --config Release --parallel
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          cpack --config build\CPackConfig.cmake -G NSIS -C Release --package-directory build
+          cpack --config build\CPackConfig.cmake -G NSIS -C Release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          Copy-Item "build\Tread Marks Install.exe" "Tread-Marks-windows-x64-installer.exe"
+          Copy-Item "Tread Marks Install.exe" "Tread-Marks-windows-x64-installer.exe"
 
       - name: Upload NSIS installer
         uses: actions/upload-artifact@v4
