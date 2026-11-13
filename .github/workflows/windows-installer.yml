@@ -1,0 +1,82 @@
+name: Windows NSIS installer x64
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.8.3
+          arch: win64_msvc2022_64
+          dir: ${{ github.workspace }}\Qt
+          cache: true
+
+      - name: Install pkg-config for vcpkg
+        id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-pkgconf
+
+      - name: Install native dependencies
+        shell: pwsh
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
+        run: |
+          $env:PKG_CONFIG = "$env:MSYS2_LOCATION\ucrt64\bin\pkg-config.exe"
+          if (!(Test-Path $env:PKG_CONFIG)) { throw "pkg-config was not installed at $env:PKG_CONFIG" }
+          "PKG_CONFIG=$env:PKG_CONFIG" | Out-File -FilePath $env:GITHUB_ENV -Append
+          $vcpkgRoot = "$env:RUNNER_TEMP\vcpkg"
+          git clone --depth 1 --branch 2024.04.26 https://github.com/microsoft/vcpkg $vcpkgRoot
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & "$vcpkgRoot\bootstrap-vcpkg.bat" -disableMetrics
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & "$vcpkgRoot\vcpkg.exe" install --triplet x64-windows-pkgconfig --overlay-triplets="$env:GITHUB_WORKSPACE\.github\vcpkg-triplets" sfml glew zlib
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "VCPKG_ROOT=$vcpkgRoot" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Install NSIS
+        shell: pwsh
+        run: |
+          choco install nsis --yes --no-progress
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Configure x64 build
+        shell: pwsh
+        run: |
+          cmake -S . -B build -A x64 `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
+            -DVCPKG_TARGET_TRIPLET=x64-windows-pkgconfig `
+            -DVCPKG_OVERLAY_TRIPLETS="$env:GITHUB_WORKSPACE\.github\vcpkg-triplets" `
+            -DPATH_QT="$env:GITHUB_WORKSPACE\Qt\6.8.3\msvc2022_64"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build and package NSIS installer
+        shell: pwsh
+        run: |
+          cmake --build build --config Release --parallel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cpack --config build\CPackConfig.cmake -G NSIS -C Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item "Tread Marks Install.exe" "Tread-Marks-windows-x64-installer.exe"
+
+      - name: Upload NSIS installer
+        uses: actions/upload-artifact@v7
+        with:
+          path: Tread-Marks-windows-x64-installer.exe
+          archive: false
+          if-no-files-found: error

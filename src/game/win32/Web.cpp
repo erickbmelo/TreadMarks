@@ -23,5 +23,5 @@
 
 void OpenWebLink(const char* link)
 {
-	ShellExecute(NULL, "open", link, NULL, NULL, NULL);
+	ShellExecuteA(NULL, "open", link, NULL, NULL, NULL);
 }

@@ -27,7 +27,7 @@ public:
 	CTextBlock() {Buffer=NULL; NumBlocks=0; Free();}
 	~CTextBlock() {Free();}
 	bool Free();
-	int Load(char *file);
+	int Load(const char *file);
 	char *Get(int id);
 
 };

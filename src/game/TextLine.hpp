@@ -27,7 +27,7 @@ public:
 	CText() {Buffer=NULL; NumLines=0; Free();}
 	~CText() {Free();}
 	bool Free();
-	int Load(char *file);
+	int Load(const char *file);
 	char *Get(int id);
 
 };
@@ -42,7 +42,7 @@ extern CText SoundPaths;
 extern CText ControlText;
 
 extern bool Text_FreeText();
-extern int Text_LoadLines(char *file);
+extern int Text_LoadLines(const char *file);
 extern char *Text_GetLine(int line);
 
 enum {

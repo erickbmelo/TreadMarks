@@ -23,8 +23,8 @@ using namespace std;
 
 CStr GetAppDataDir()
 {
-	TCHAR szPath[MAX_PATH];
-	SHGetFolderPath(NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, szPath);
+	char szPath[MAX_PATH];
+	SHGetFolderPathA(NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, szPath);
 	std::string rc(szPath);
 	if(rc.size())
 	{
@@ -38,8 +38,8 @@ CStr GetAppDataDir()
 
 CStr GetCommonAppDataDir()
 {
-	TCHAR szPath[MAX_PATH];
-	SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, szPath);
+	char szPath[MAX_PATH];
+	SHGetFolderPathA(NULL, CSIDL_COMMON_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, szPath);
 	std::string rc(szPath);
 	if(rc.size())
 	{

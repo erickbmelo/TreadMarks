@@ -308,13 +308,13 @@ int main(int argc, char** argv)
 	if(!CTankGame::Get().GetSettings()->DedicatedServer){	//IF NOT dedicated, check for multiple instances.
 	    #ifdef WIN32
 		//Prevent multiple instances.
-		tmsem = OpenSemaphore(SEMAPHORE_ALL_ACCESS, false, tmsemname);
+		tmsem = OpenSemaphoreA(SEMAPHORE_ALL_ACCESS, false, tmsemname);
 		if(tmsem){	//Oops, already running.
-			MessageBox(NULL, "Tread Marks is already running!", "Error!", MB_OK);
+			MessageBoxA(NULL, "Tread Marks is already running!", "Error!", MB_OK);
 			CloseHandle(tmsem);
 			return 0;
 		}
-		tmsem = CreateSemaphore(NULL, 0, 1, tmsemname);
+		tmsem = CreateSemaphoreA(NULL, 0, 1, tmsemname);
 		#endif
 	}
 	//
