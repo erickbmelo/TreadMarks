@@ -2084,7 +2084,7 @@ bool CTankGame::DoFrame(){
 				for(int n = (4 - num.len()); n; n--) num = "0" + num;
 				if(tbmp2.Init(tbmp.Width(), tbmp.Height(), 24)){
 				    #ifdef WIN32
-                        CreateDirectory(FilePathOnly(GameSettings.AnimationDir), NULL);	//Make sure path exists.
+                        CreateDirectoryA(FilePathOnly(GameSettings.AnimationDir), NULL);	//Make sure path exists.
                     #else
                         mkdir(FilePathOnly(GameSettings.AnimationDir), 0777);
                     #endif

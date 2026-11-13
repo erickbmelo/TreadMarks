@@ -36,7 +36,7 @@ bool CTextBlock::Free()
     return false;
 }
 
-int CTextBlock::Load(char *file)
+int CTextBlock::Load(const char *file)
 {
     FILE *fp;
     int l;
