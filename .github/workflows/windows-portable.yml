@@ -23,9 +23,21 @@ jobs:
           dir: ${{ github.workspace }}\Qt
           cache: true
 
+      - name: Install pkg-config for vcpkg
+        id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-pkgconf
+
       - name: Install native dependencies
         shell: pwsh
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
         run: |
+          $env:PKG_CONFIG = "$env:MSYS2_LOCATION\ucrt64\bin\pkg-config.exe"
+          if (!(Test-Path $env:PKG_CONFIG)) { throw "pkg-config was not installed at $env:PKG_CONFIG" }
           $vcpkgRoot = "$env:RUNNER_TEMP\vcpkg"
           git clone --depth 1 --branch 2024.04.26 https://github.com/microsoft/vcpkg $vcpkgRoot
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
